@@ -52,6 +52,10 @@
     <Reference Include="FlitBit.Wireup">
       <HintPath>..\packages\FlitBit.Wireup.2.5.6\lib\net40\FlitBit.Wireup.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.5.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="RedRocket.Persistence.Common">
       <HintPath>..\packages\RedRocket.Persistence.Common.1.0.0.0\lib\net45\RedRocket.Persistence.Common.dll</HintPath>
     </Reference>
