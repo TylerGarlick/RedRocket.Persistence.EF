@@ -35,6 +35,6 @@ using this tokenized nuspec file.
     </dependencies>
   </metadata>
   <files>
-	<file src="RedRocket.Persistence.EF.dll" target="lib\net45" />
+	<file src="bin\Release\RedRocket.Persistence.EF.dll" target="lib\net45" />
   </files>
 </package>
