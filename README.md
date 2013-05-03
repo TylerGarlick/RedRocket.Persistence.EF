@@ -1,4 +1,4 @@
-RedRocket.Repositories.EntityFramework
+RedRocket.Persistence.EF
 ======================================
 
 Opinionated Repository Pattern
