@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>FlitBit.Core</id>
+    <version>2.11.0</version>
+    <title>FlitBit.Core</title>
+    <authors>Phillip Clark</authors>
+    <owners>Phillip Clark</owners>
+    <licenseUrl>http://fbcore.codeplex.com/license</licenseUrl>
+    <projectUrl>http://fbcore.codeplex.com/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Core classes and utilities used by the FlitBit Frameworks.</description>
+    <releaseNotes>New IFactory methods to reduce reflection. From Tyler Garlick's fork.</releaseNotes>
+    <copyright>Copyright 2013</copyright>
+    <language />
+    <dependencies>
+      <dependency id="Newtonsoft.Json" version="4.5.11" />
+    </dependencies>
+  </metadata>
+</package>

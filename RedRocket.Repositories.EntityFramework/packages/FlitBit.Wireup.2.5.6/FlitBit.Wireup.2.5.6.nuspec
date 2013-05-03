@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>FlitBit.Wireup</id>
+    <version>2.5.6</version>
+    <title>FlitBit.Wireup</title>
+    <authors>Phillip Clark</authors>
+    <owners>Phillip Clark</owners>
+    <licenseUrl>http://fbwire.codeplex.com/license</licenseUrl>
+    <projectUrl>http://fbwire.codeplex.com/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Utilities for bootstrapping applications and wiring up dependencies.</description>
+    <releaseNotes>Re-signed assembly.</releaseNotes>
+    <copyright>Copyright 2013</copyright>
+    <dependencies>
+      <dependency id="FlitBit.Core" version="2.10.1" />
+    </dependencies>
+  </metadata>
+</package>
