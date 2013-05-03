@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!-- 
+This tokenized .nuspec manifest file is targeting the latest NuGet namespace,
+which ensures you can benefit from the latest packaging features.
+
+If desired, you can change the XML-namespace and target the original XSD.
+To do so, replace the current package declaration by the following:
+
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+
+Run "nuget.exe pack <project>" to build a nuget package for this project
+using this tokenized nuspec file.
+
+-->
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <version>$version$</version>
+    <authors>Tyler Garlick</authors>
+    <owners>RedRocket, Tyler Garlick</owners>
+    <id>$id$</id>
+    <title>RedRocket Persistence Framework | Entity Framework</title>
+    <tags>Entity Framework, Generic Repository, Persistence, FlitBit</tags>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Entity Framework Implementation of the RedRocket Persistence Framework</description>
+    <projectUrl>https://github.com/TylerGarlick/RedRocket.Persistence.EF</projectUrl>
+    <dependencies>
+      <dependency id="EntityFramework" version="5.0.0" />
+      <dependency id="FlitBit.Copy" version="2.8.0" />
+      <dependency id="FlitBit.Core" version="2.11.0" />
+      <dependency id="FlitBit.Emit" version="2.8.3" />
+      <dependency id="FlitBit.IoC" version="2.9.0" />
+      <dependency id="FlitBit.Wireup" version="2.5.6" />
+      <dependency id="Newtonsoft.Json" version="4.5.11" />
+      <dependency id="RedRocket.Persistence.Common" version="1.0.0.0" />
+    </dependencies>
+  </metadata>
+  <files />
+</package>
