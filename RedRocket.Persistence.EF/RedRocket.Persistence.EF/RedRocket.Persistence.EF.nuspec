@@ -17,7 +17,7 @@ using this tokenized nuspec file.
     <version>$version$</version>
     <authors>Tyler Garlick</authors>
     <owners>RedRocket, Tyler Garlick</owners>
-    <id>$id$</id>
+    <id>RedRocket.Persistence.EF</id>
     <title>RedRocket Persistence Framework | Entity Framework</title>
     <tags>Entity Framework, Generic Repository, Persistence, FlitBit</tags>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -31,8 +31,10 @@ using this tokenized nuspec file.
       <dependency id="FlitBit.IoC" version="2.9.0" />
       <dependency id="FlitBit.Wireup" version="2.5.6" />
       <dependency id="Newtonsoft.Json" version="4.5.11" />
-      <dependency id="RedRocket.Persistence.Common" version="1.0.0.0" />
+      <dependency id="RedRocket.Persistence.Common" />
     </dependencies>
   </metadata>
-  <files />
+  <files>
+	<file src="RedRocket.Persistence.EF.dll" target="lib\net45" />
+  </files>
 </package>
