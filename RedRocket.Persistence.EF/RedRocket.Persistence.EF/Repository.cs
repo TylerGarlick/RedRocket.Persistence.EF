@@ -8,9 +8,9 @@ using System.Linq.Expressions;
 using System.Transactions;
 using FlitBit.IoC;
 using RedRocket.Persistence.Common;
-using RedRocket.Persistence.Common.Validation;
 using RedRocket.Persistence.EF.ContextFactories;
 using RedRocket.Persistence.EF.Validation;
+using RedRocket.Utilities.Core.Validation;
 
 namespace RedRocket.Persistence.EF
 {
@@ -96,10 +96,10 @@ namespace RedRocket.Persistence.EF
             }
         }
 
-        public IEnumerable<PersistenceValidationError> Validate(T entity)
+        public IEnumerable<ObjectValidationError> Validate(T entity)
         {
             var entityValidationResult = GetValidationErrors(entity);
-            return entityValidationResult.ValidationErrors.Select(validationError => new PersistenceValidationError()
+            return entityValidationResult.ValidationErrors.Select(validationError => new ObjectValidationError()
                                                                                          {
                                                                                              Message = validationError.ErrorMessage,
                                                                                              PropertyName = validationError.PropertyName
