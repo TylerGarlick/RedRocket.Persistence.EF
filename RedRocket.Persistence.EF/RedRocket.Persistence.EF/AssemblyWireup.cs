@@ -5,7 +5,7 @@ using RedRocket.Persistence.Common;
 using RedRocket.Persistence.EF;
 
 [assembly: WireupDependency(typeof(WireupThisAssembly))]
-[assembly: Wireup(typeof(AssemblyWireup))]
+[assembly: Wireup(typeof(RedRocket.Persistence.EF.AssemblyWireup))]
 namespace RedRocket.Persistence.EF
 {
     public sealed class AssemblyWireup : IWireupCommand
