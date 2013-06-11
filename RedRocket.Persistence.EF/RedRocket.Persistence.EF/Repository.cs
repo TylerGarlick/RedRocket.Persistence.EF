@@ -6,41 +6,39 @@ using System.Data.Entity.Validation;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Transactions;
-using FlitBit.IoC;
 using RedRocket.Persistence.Common;
 using RedRocket.Persistence.EF.ContextFactories;
-using RedRocket.Persistence.EF.Validation;
 using RedRocket.Utilities.Core.Validation;
 
 namespace RedRocket.Persistence.EF
 {
     public class Repository<T> : IRepository<T> where T : class, new()
     {
-        public readonly DbContext Db;
-
-        public Repository()
-            : this(null)
-        { }
+        public DbContext Context { get; private set; }
 
         public Repository(DbContext dbContext)
         {
-            if (dbContext == null)
-            {
-                var dbContextFactory = Create.New<IDbContextFactory>();
-                Db = dbContextFactory.GetDbContext(new T());
-            }
-            else
-                Db = dbContext;
+            Context = dbContext;
+        }
+
+        public Repository(IDbContextFactory dbContextFactory)
+        {
+            Context = dbContextFactory.GetDbContext(new T());
         }
 
         public virtual IQueryable<T> All()
         {
-            return Db.Set<T>().AsNoTracking();
+            return Context.Set<T>();
         }
 
         public virtual IQueryable<T> Query(Func<T, bool> predicate)
         {
             return All().Where(predicate).AsQueryable();
+        }
+
+        public virtual IQueryable<T> Include(string path)
+        {
+            return All().Include(path);
         }
 
         public virtual T FindWithKey(Expression<Func<T, bool>> predicate)
@@ -50,48 +48,47 @@ namespace RedRocket.Persistence.EF
 
         public virtual T Add(T entity)
         {
-            var entityValidationResult = GetValidationErrors(entity);
-            if (entityValidationResult.IsValid)
+            var errors = Validate(entity);
+            if (!errors.Any())
             {
                 using (var transaction = new TransactionScope())
                 {
-                    Db.Set<T>().Add(entity);
-                    Db.SaveChanges();
+                    Context.Set<T>().Add(entity);
+                    Context.SaveChanges();
                     transaction.Complete();
                     ChangeEntityState(entity, EntityState.Detached);
                     return entity;
                 }
             }
 
-            throw new EntityValidationExeption(entityValidationResult);
+            throw new ObjectValidationException(errors);
         }
 
         public virtual T Update(T entity)
         {
-            var entityValidationResult = GetValidationErrors(entity);
-            if (entityValidationResult.IsValid)
+            var errors = Validate(entity);
+            if (!errors.Any())
             {
                 using (var transaction = new TransactionScope())
                 {
-                    entity = Db.Set<T>().Attach(entity);
+                    entity = Context.Set<T>().Attach(entity);
                     ChangeEntityState(entity, EntityState.Modified);
-                    Db.SaveChanges();
+                    Context.SaveChanges();
                     transaction.Complete();
-                    ChangeEntityState(entity, EntityState.Detached);
                     return entity;
                 }
             }
 
-            throw new EntityValidationExeption(entityValidationResult);
+            throw new ObjectValidationException(errors);
         }
 
         public void Delete(T entity)
         {
             using (var transaction = new TransactionScope())
             {
-                Db.Set<T>().Attach(entity);
+                Context.Set<T>().Attach(entity);
                 ChangeEntityState(entity, EntityState.Deleted);
-                Db.SaveChanges();
+                Context.SaveChanges();
                 transaction.Complete();
             }
         }
@@ -106,15 +103,15 @@ namespace RedRocket.Persistence.EF
                                                                                          });
         }
 
-        void ChangeEntityState(T entity, EntityState state)
+        public void ChangeEntityState(T entity, EntityState state)
         {
-            var entityMeta = Db.Entry(entity);
+            var entityMeta = Context.Entry(entity);
             entityMeta.State = state;
         }
 
         DbEntityValidationResult GetValidationErrors(T entity)
         {
-            return Db.Entry(entity).GetValidationResult();
+            return Context.Entry(entity).GetValidationResult();
         }
     }
 }

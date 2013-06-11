@@ -37,8 +37,9 @@
     <Reference Include="EntityFramework">
       <HintPath>..\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
-    <Reference Include="FlitBit.Copy">
-      <HintPath>..\packages\FlitBit.Copy.2.8.0\lib\net40\FlitBit.Copy.dll</HintPath>
+    <Reference Include="FlitBit.Copy, Version=2.8.1.0, Culture=neutral, PublicKeyToken=38f03d0878531ff3, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\FlitBit.Copy.2.8.1\lib\net40\FlitBit.Copy.dll</HintPath>
     </Reference>
     <Reference Include="FlitBit.Core, Version=2.11.3.0, Culture=neutral, PublicKeyToken=38f03d0878531ff3, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -48,9 +49,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\FlitBit.Emit.2.8.5\lib\net40\FlitBit.Emit.dll</HintPath>
     </Reference>
-    <Reference Include="FlitBit.IoC, Version=2.10.0.0, Culture=neutral, PublicKeyToken=38f03d0878531ff3, processorArchitecture=MSIL">
+    <Reference Include="FlitBit.IoC, Version=2.11.2.0, Culture=neutral, PublicKeyToken=38f03d0878531ff3, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\FlitBit.IoC.2.10.0\lib\net40\FlitBit.IoC.dll</HintPath>
+      <HintPath>..\packages\FlitBit.IoC.2.11.2\lib\net40\FlitBit.IoC.dll</HintPath>
     </Reference>
     <Reference Include="FlitBit.Wireup, Version=3.0.3.0, Culture=neutral, PublicKeyToken=38f03d0878531ff3, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -61,15 +62,15 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.5.0.5\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.5.0.6\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="RedRocket.Persistence.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="RedRocket.Persistence.Common, Version=1.0.0.23195, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\RedRocket.Persistence.Common.1.0.1.19\lib\net45\RedRocket.Persistence.Common.dll</HintPath>
+      <HintPath>..\packages\RedRocket.Persistence.Common.1.0.3\lib\net45\RedRocket.Persistence.Common.dll</HintPath>
     </Reference>
     <Reference Include="RedRocket.Utilities.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\RedRocket.Utilities.Core.1.0.0.36\lib\net45\RedRocket.Utilities.Core.dll</HintPath>
+      <HintPath>..\packages\RedRocket.Utilities.Core.1.0.5\lib\net45\RedRocket.Utilities.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -84,7 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ContextFactories\AbstractInerfaceAwareDbContextFactory.cs" />
-    <Compile Include="Validation\EntityValidationExeption.cs" />
+    <Compile Include="IRepository.cs" />
     <Compile Include="Repository.cs" />
     <Compile Include="ContextFactories\IDbContextFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
