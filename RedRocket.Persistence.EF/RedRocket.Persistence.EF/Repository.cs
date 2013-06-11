@@ -58,6 +58,7 @@ namespace RedRocket.Persistence.EF
                     Db.Set<T>().Add(entity);
                     Db.SaveChanges();
                     transaction.Complete();
+                    ChangeEntityState(entity, EntityState.Detached);
                     return entity;
                 }
             }
@@ -73,10 +74,10 @@ namespace RedRocket.Persistence.EF
                 using (var transaction = new TransactionScope())
                 {
                     entity = Db.Set<T>().Attach(entity);
-                    var entityMeta = Db.Entry(entity);
-                    entityMeta.State = EntityState.Modified;
+                    ChangeEntityState(entity, EntityState.Modified);
                     Db.SaveChanges();
                     transaction.Complete();
+                    ChangeEntityState(entity, EntityState.Detached);
                     return entity;
                 }
             }
@@ -89,8 +90,7 @@ namespace RedRocket.Persistence.EF
             using (var transaction = new TransactionScope())
             {
                 Db.Set<T>().Attach(entity);
-                var entityMeta = Db.Entry(entity);
-                entityMeta.State = EntityState.Deleted;
+                ChangeEntityState(entity, EntityState.Deleted);
                 Db.SaveChanges();
                 transaction.Complete();
             }
@@ -104,6 +104,12 @@ namespace RedRocket.Persistence.EF
                                                                                              Message = validationError.ErrorMessage,
                                                                                              PropertyName = validationError.PropertyName
                                                                                          });
+        }
+
+        void ChangeEntityState(T entity, EntityState state)
+        {
+            var entityMeta = Db.Entry(entity);
+            entityMeta.State = state;
         }
 
         DbEntityValidationResult GetValidationErrors(T entity)
