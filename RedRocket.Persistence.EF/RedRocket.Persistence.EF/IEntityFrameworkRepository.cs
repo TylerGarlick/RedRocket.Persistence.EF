@@ -11,4 +11,9 @@ namespace RedRocket.Persistence.EF
         IQueryable<T> Include(string path);
         void ChangeEntityState(T entity, EntityState state);
     }
+
+    public interface IEntityFrameworkReadOnlyRepository<T> : IReadOnlyRepository<T> where T : class
+    {
+        
+    }
 }
