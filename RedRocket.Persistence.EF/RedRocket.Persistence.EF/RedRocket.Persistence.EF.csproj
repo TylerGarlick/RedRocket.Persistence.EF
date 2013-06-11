@@ -90,6 +90,7 @@
     <Compile Include="ContextFactories\IDbContextFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AssemblyWireup.cs" />
+    <Compile Include="Testing\MockRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
