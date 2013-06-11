@@ -66,12 +66,12 @@ namespace RedRocket.Persistence.EF.Testing
         public DbContext Context { get; private set; }
         public IQueryable<T> Include(string path)
         {
-            throw new NotImplementedException();
+            return Enumerable.Empty<T>().AsQueryable();
         }
 
         public void ChangeEntityState(T entity, EntityState state)
         {
-            throw new NotImplementedException();
+
         }
 
         public IEnumerable<ObjectValidationError> Validate(T entity)
