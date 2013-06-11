@@ -85,7 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ContextFactories\AbstractInerfaceAwareDbContextFactory.cs" />
-    <Compile Include="IRepository.cs" />
+    <Compile Include="IEntityFrameworkRepository.cs" />
     <Compile Include="Repository.cs" />
     <Compile Include="ContextFactories\IDbContextFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
