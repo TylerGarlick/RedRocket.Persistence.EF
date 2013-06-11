@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
+using System.Data.Objects;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Transactions;
@@ -55,7 +57,6 @@ namespace RedRocket.Persistence.EF
                     Context.Set<T>().Add(entity);
                     Context.SaveChanges();
                     transaction.Complete();
-                    ChangeEntityState(entity, EntityState.Detached);
                     return entity;
                 }
             }
@@ -70,8 +71,7 @@ namespace RedRocket.Persistence.EF
             {
                 using (var transaction = new TransactionScope())
                 {
-                    entity = Context.Set<T>().Attach(entity);
-                    ChangeEntityState(entity, EntityState.Modified);
+                    AttachIfNotAttached(entity);
                     Context.SaveChanges();
                     transaction.Complete();
                     return entity;
@@ -85,7 +85,7 @@ namespace RedRocket.Persistence.EF
         {
             using (var transaction = new TransactionScope())
             {
-                Context.Set<T>().Attach(entity);
+                AttachIfNotAttached(entity);
                 ChangeEntityState(entity, EntityState.Deleted);
                 Context.SaveChanges();
                 transaction.Complete();
@@ -108,9 +108,49 @@ namespace RedRocket.Persistence.EF
             entityMeta.State = state;
         }
 
+        void AttachIfNotAttached(T entity)
+        {
+            var entityMeta = Context.Entry(entity);
+            if (entityMeta.State == EntityState.Detached)
+            {
+                var objectContext = ((IObjectContextAdapter)Context).ObjectContext;
+                try
+                {
+                    var key = objectContext.CreateEntityKey(EntitySetName, entity);
+                    var updatedEntity = (T)objectContext.GetObjectByKey(key);
+                    Context.Entry(updatedEntity).CurrentValues.SetValues(entity);
+                    objectContext.ObjectStateManager.ChangeObjectState(updatedEntity, EntityState.Modified);
+                }
+                catch
+                {
+                    Context.Set<T>().Attach(entity);
+                }
+            }
+
+        }
+
         DbEntityValidationResult GetValidationErrors(T entity)
         {
             return Context.Entry(entity).GetValidationResult();
+        }
+
+        private void CheckIfDifferent(DbEntityEntry entry)
+        {
+            if (entry.State != EntityState.Modified)
+                return;
+
+            if (entry.OriginalValues.PropertyNames.Any(propertyName => !entry.OriginalValues[propertyName].Equals(entry.CurrentValues[propertyName])))
+                return;
+
+
+        }
+
+        string EntitySetName
+        {
+            get
+            {
+                return ((IObjectContextAdapter)Context).ObjectContext.CreateObjectSet<T>().EntitySet.Name;
+            }
         }
     }
 }

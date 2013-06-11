@@ -16,6 +16,7 @@
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -35,7 +36,35 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="FlitBit.Copy">
+      <HintPath>..\packages\FlitBit.Copy.2.8.1\lib\net40\FlitBit.Copy.dll</HintPath>
+    </Reference>
+    <Reference Include="FlitBit.Core">
+      <HintPath>..\packages\FlitBit.Core.2.11.3\lib\net40\FlitBit.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="FlitBit.Dto">
+      <HintPath>..\packages\FlitBit.Dto.2.3.0\lib\net40\FlitBit.Dto.dll</HintPath>
+    </Reference>
+    <Reference Include="FlitBit.Emit">
+      <HintPath>..\packages\FlitBit.Emit.2.8.5\lib\net40\FlitBit.Emit.dll</HintPath>
+    </Reference>
+    <Reference Include="FlitBit.IoC">
+      <HintPath>..\packages\FlitBit.IoC.2.11.2\lib\net40\FlitBit.IoC.dll</HintPath>
+    </Reference>
+    <Reference Include="FlitBit.Wireup">
+      <HintPath>..\packages\FlitBit.Wireup.3.0.3\lib\net40\FlitBit.Wireup.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -50,8 +79,27 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="UnitTest1.cs" />
+    <Compile Include="Entities\Human.cs" />
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="TestDbContext.cs" />
+    <Compile Include="RepositoryAttachmentTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Wireup.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="TestDb.mdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RedRocket.Persistence.EF\RedRocket.Persistence.EF.csproj">
+      <Project>{35368c87-fba2-4da4-95ae-d7379248a688}</Project>
+      <Name>RedRocket.Persistence.EF</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
@@ -73,6 +121,7 @@
   </Choose>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

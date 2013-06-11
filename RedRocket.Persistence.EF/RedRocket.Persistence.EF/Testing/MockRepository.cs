@@ -57,7 +57,7 @@ namespace RedRocket.Persistence.EF.Testing
             }
             throw new ObjectValidationException(entity.GetValidationErrors());
         }
-
+       
         public virtual void Delete(T entity)
         {
             Data.Remove(entity);
@@ -77,6 +77,17 @@ namespace RedRocket.Persistence.EF.Testing
         public IEnumerable<ObjectValidationError> Validate(T entity)
         {
             return entity.GetValidationErrors();
+        }
+    }
+
+    public static class RepositoryExtensions
+    {
+        public static T Update<T>(this IRepository<T> repository, T entity, Expression<Func<T, bool>> predicate) where T : class
+        {
+            var existingEntity = repository.All().FirstOrDefault(predicate);
+            repository.Delete(existingEntity);
+            repository.Add(entity);
+            return entity;
         }
     }
 }
