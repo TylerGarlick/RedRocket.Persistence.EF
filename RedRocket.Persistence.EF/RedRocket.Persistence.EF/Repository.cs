@@ -6,13 +6,12 @@ using System.Data.Entity.Validation;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Transactions;
-using RedRocket.Persistence.Common;
 using RedRocket.Persistence.EF.ContextFactories;
 using RedRocket.Utilities.Core.Validation;
 
 namespace RedRocket.Persistence.EF
 {
-    public class Repository<T> : IRepository<T> where T : class, new()
+    public class Repository<T> : IEntityFrameworkRepository<T> where T : class, new()
     {
         public DbContext Context { get; private set; }
 

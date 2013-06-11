@@ -1,8 +1,6 @@
 ﻿using FlitBit.IoC;
 using FlitBit.Wireup;
 using FlitBit.Wireup.Meta;
-using RedRocket.Persistence.Common;
-using RedRocket.Persistence.EF;
 
 [assembly: WireupDependency(typeof(WireupThisAssembly))]
 [assembly: Wireup(typeof(RedRocket.Persistence.EF.AssemblyWireup))]
@@ -13,13 +11,13 @@ namespace RedRocket.Persistence.EF
         public void Execute(IWireupCoordinator coordinator)
         {
             Container.Root
-                     .ForGenericType(typeof(IReadOnlyRepository<>))
+                     .ForGenericType(typeof(IEntityFrameworkReadOnlyRepository<>))
                      .Register(typeof(Repository<>))
                      .ResolveAnInstancePerScope()
                      .End();
 
             Container.Root
-                     .ForGenericType(typeof(IRepository<>))
+                     .ForGenericType(typeof(IEntityFrameworkRepository<>))
                      .Register(typeof(Repository<>))
                      .ResolveAnInstancePerScope()
                      .End();
