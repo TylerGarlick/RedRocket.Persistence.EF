@@ -11,13 +11,13 @@ namespace RedRocket.Persistence.EF
         public void Execute(IWireupCoordinator coordinator)
         {
             Container.Root
-                     .ForGenericType(typeof(IEntityFrameworkReadOnlyRepository<>))
+                     .ForGenericType(typeof(IReadOnlyRepository<>))
                      .Register(typeof(Repository<>))
                      .ResolveAnInstancePerScope()
                      .End();
 
             Container.Root
-                     .ForGenericType(typeof(IEntityFrameworkRepository<>))
+                     .ForGenericType(typeof(IRepository<>))
                      .Register(typeof(Repository<>))
                      .ResolveAnInstancePerScope()
                      .End();

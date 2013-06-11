@@ -11,7 +11,7 @@ using RedRocket.Utilities.Core.Validation;
 
 namespace RedRocket.Persistence.EF
 {
-    public class Repository<T> : IEntityFrameworkReadOnlyRepository<T>, IEntityFrameworkRepository<T> where T : class, new()
+    public class Repository<T> : IRepository<T> where T : class, new()
     {
         public DbContext Context { get; private set; }
 

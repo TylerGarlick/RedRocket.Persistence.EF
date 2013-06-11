@@ -27,7 +27,6 @@ using this tokenized nuspec file.
       <dependency id="EntityFramework"/>
       <dependency id="FlitBit.IoC" />
       <dependency id="Newtonsoft.Json" />
-      <dependency id="RedRocket.Persistence.Common" />
     </dependencies>
   </metadata>
   <files>
