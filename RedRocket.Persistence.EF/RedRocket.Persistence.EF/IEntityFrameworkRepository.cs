@@ -4,7 +4,6 @@ using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
-using RedRocket.Persistence.Common;
 using RedRocket.Utilities.Core.Validation;
 
 namespace RedRocket.Persistence.EF

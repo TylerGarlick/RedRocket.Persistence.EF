@@ -18,14 +18,15 @@ using this tokenized nuspec file.
     <authors>Tyler Garlick</authors>
     <owners>RedRocket, Tyler Garlick</owners>
     <id>RedRocket.Persistence.EF</id>
-    <title>RedRocket Persistence Framework | Entity Framework</title>
+    <title>RedRocket | Persistence | Entity Framework</title>
     <tags>RedRocket Framework, RedRocket, Entity Framework, Generic Repository, Persistence, FlitBit</tags>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Entity Framework Implementation of the RedRocket Persistence Framework</description>
     <projectUrl>https://github.com/TylerGarlick/RedRocket.Persistence.EF</projectUrl>
     <dependencies>
       <dependency id="EntityFramework" version="5.0.0"/>
-      <dependency id="FlitBit.IoC" />
+      <dependency id="RedRocket.FlitBit.IoC" />
+      <dependency id="RedRocket.Utilities.Core" />
       <dependency id="Newtonsoft.Json" />
     </dependencies>
   </metadata>

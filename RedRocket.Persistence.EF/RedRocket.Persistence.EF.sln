@@ -6,7 +6,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{3F4E72
 		.nuget\NuGet.Config = .nuget\NuGet.Config
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.Extensions.targets = .nuget\NuGet.Extensions.targets
-		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedRocket.Persistence.EF", "RedRocket.Persistence.EF\RedRocket.Persistence.EF.csproj", "{35368C87-FBA2-4DA4-95AE-D7379248A688}"
