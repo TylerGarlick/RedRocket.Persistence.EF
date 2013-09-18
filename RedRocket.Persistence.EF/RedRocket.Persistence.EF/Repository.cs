@@ -4,10 +4,10 @@ using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
-using System.Data.Objects;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Transactions;
+using FlitBit.IoC.Meta;
 using RedRocket.Persistence.EF.ContextFactories;
 using RedRocket.Utilities.Core.Validation;
 
@@ -16,15 +16,12 @@ namespace RedRocket.Persistence.EF
     public class Repository<T> : IRepository<T> where T : class, new()
     {
         public DbContext Context { get; private set; }
+        public bool ShouldValidate { get; set; }
 
-        public Repository(DbContext dbContext)
-        {
-            Context = dbContext;
-        }
-
-        public Repository(IDbContextFactory dbContextFactory)
+        public Repository(IDbContextFactory dbContextFactory, bool shouldValidate = true)
         {
             Context = dbContextFactory.GetDbContext(new T());
+            ShouldValidate = shouldValidate;
         }
 
         public virtual IQueryable<T> All()
@@ -37,12 +34,7 @@ namespace RedRocket.Persistence.EF
             return All().Where(predicate).AsQueryable();
         }
 
-        public virtual IQueryable<T> Include(string path)
-        {
-            return All().Include(path);
-        }
-
-        public virtual T FindWithKey(Expression<Func<T, bool>> predicate)
+        public virtual T FindByKey(Expression<Func<T, bool>> predicate)
         {
             return All().SingleOrDefault(predicate);
         }
@@ -50,38 +42,35 @@ namespace RedRocket.Persistence.EF
         public virtual T Add(T entity)
         {
             var errors = Validate(entity);
-            if (!errors.Any())
-            {
-                using (var transaction = new TransactionScope())
-                {
-                    Context.Set<T>().Add(entity);
-                    Context.SaveChanges();
-                    transaction.Complete();
-                    return entity;
-                }
-            }
+            if (ShouldValidate && errors.Any())
+                throw new ObjectValidationException(errors);
 
-            throw new ObjectValidationException(errors);
+            using (var transaction = new TransactionScope())
+            {
+                Context.Set<T>().Add(entity);
+                Context.SaveChanges();
+                transaction.Complete();
+                return entity;
+            }
         }
 
         public virtual T Update(T entity)
         {
             var errors = Validate(entity);
-            if (!errors.Any())
-            {
-                using (var transaction = new TransactionScope())
-                {
-                    AttachIfNotAttached(entity);
-                    Context.SaveChanges();
-                    transaction.Complete();
-                    return entity;
-                }
-            }
 
-            throw new ObjectValidationException(errors);
+            if (ShouldValidate && errors.Any())
+                throw new ObjectValidationException(errors);
+
+            using (var transaction = new TransactionScope())
+            {
+                AttachIfNotAttached(entity);
+                Context.SaveChanges();
+                transaction.Complete();
+                return entity;
+            }
         }
 
-        public void Delete(T entity)
+        public virtual void Delete(T entity)
         {
             using (var transaction = new TransactionScope())
             {
@@ -92,7 +81,7 @@ namespace RedRocket.Persistence.EF
             }
         }
 
-        public IEnumerable<ObjectValidationError> Validate(T entity)
+        public virtual IEnumerable<ObjectValidationError> Validate(T entity)
         {
             var entityValidationResult = GetValidationErrors(entity);
             return entityValidationResult.ValidationErrors.Select(validationError => new ObjectValidationError()
@@ -108,7 +97,7 @@ namespace RedRocket.Persistence.EF
             entityMeta.State = state;
         }
 
-        void AttachIfNotAttached(T entity)
+        protected void AttachIfNotAttached(T entity)
         {
             var entityMeta = Context.Entry(entity);
             if (entityMeta.State == EntityState.Detached)
@@ -129,23 +118,12 @@ namespace RedRocket.Persistence.EF
 
         }
 
-        DbEntityValidationResult GetValidationErrors(T entity)
+        protected DbEntityValidationResult GetValidationErrors(T entity)
         {
             return Context.Entry(entity).GetValidationResult();
         }
 
-        private void CheckIfDifferent(DbEntityEntry entry)
-        {
-            if (entry.State != EntityState.Modified)
-                return;
-
-            if (entry.OriginalValues.PropertyNames.Any(propertyName => !entry.OriginalValues[propertyName].Equals(entry.CurrentValues[propertyName])))
-                return;
-
-
-        }
-
-        string EntitySetName
+        protected string EntitySetName
         {
             get
             {

@@ -33,7 +33,7 @@ namespace RedRocket.Persistence.EF.Testing
             return All().Where(predicate).AsQueryable();
         }
 
-        public virtual T FindWithKey(Expression<Func<T, bool>> predicate)
+        public virtual T FindByKey(Expression<Func<T, bool>> predicate)
         {
             return All().FirstOrDefault(predicate);
         }
