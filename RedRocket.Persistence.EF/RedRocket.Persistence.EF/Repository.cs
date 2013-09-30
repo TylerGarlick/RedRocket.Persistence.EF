@@ -7,7 +7,6 @@ using System.Data.Entity.Validation;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Transactions;
-using FlitBit.IoC.Meta;
 using RedRocket.Persistence.EF.ContextFactories;
 using RedRocket.Utilities.Core.Validation;
 
@@ -17,11 +16,13 @@ namespace RedRocket.Persistence.EF
     {
         public DbContext Context { get; private set; }
         public bool ShouldValidate { get; set; }
+        public bool ShouldWrapInTransaction { get; set; }
 
-        public Repository(IDbContextFactory dbContextFactory, bool shouldValidate = true)
+        public Repository(IDbContextFactory dbContextFactory, bool shouldValidate = true, bool shouldWrapInTransaction = true)
         {
             Context = dbContextFactory.GetDbContext(new T());
             ShouldValidate = shouldValidate;
+            ShouldWrapInTransaction = shouldWrapInTransaction;
         }
 
         public virtual IQueryable<T> All()
@@ -39,52 +40,86 @@ namespace RedRocket.Persistence.EF
             return All().SingleOrDefault(predicate);
         }
 
-        public virtual T Add(T entity)
+        public virtual T Add(T entity, bool wrapInTransaction = true)
         {
-            var errors = Validate(entity);
-            if (ShouldValidate && errors.Any())
-                throw new ObjectValidationException(errors);
+            if (ShouldValidate)
+            {
+                var errors = Validate(entity).ToList();
+                if (errors.Any())
+                    throw new ObjectValidationException(errors);
+            }
 
-            using (var transaction = new TransactionScope())
+            if (ShouldWrapInTransaction && wrapInTransaction)
+            {
+                using (var transaction = new TransactionScope())
+                {
+                    Context.Set<T>().Add(entity);
+                    Context.SaveChanges();
+                    transaction.Complete();
+                }
+            }
+            else
             {
                 Context.Set<T>().Add(entity);
                 Context.SaveChanges();
-                transaction.Complete();
-                return entity;
             }
+
+            return entity;
         }
 
-        public virtual T Update(T entity)
+        public virtual T Update(T entity, bool wrapInTransaction = true)
         {
-            var errors = Validate(entity);
+            if (ShouldValidate)
+            {
+                var errors = Validate(entity).ToList();
+                if (errors.Any())
+                    throw new ObjectValidationException(errors);
+            }
 
-            if (ShouldValidate && errors.Any())
-                throw new ObjectValidationException(errors);
 
-            using (var transaction = new TransactionScope())
+            if (ShouldWrapInTransaction && wrapInTransaction)
+            {
+                using (var transaction = new TransactionScope())
+                {
+                    AttachIfNotAttached(entity);
+                    Context.SaveChanges();
+                    transaction.Complete();
+                }
+            }
+            else
             {
                 AttachIfNotAttached(entity);
                 Context.SaveChanges();
-                transaction.Complete();
-                return entity;
             }
+
+            return entity;
+
         }
 
-        public virtual void Delete(T entity)
+        public virtual void Delete(T entity, bool wrapInTransaction = true)
         {
-            using (var transaction = new TransactionScope())
+            if (ShouldWrapInTransaction && wrapInTransaction)
+            {
+                using (var transaction = new TransactionScope())
+                {
+                    AttachIfNotAttached(entity);
+                    ChangeEntityState(entity, EntityState.Deleted);
+                    Context.SaveChanges();
+                    transaction.Complete();
+                }
+            }
+            else
             {
                 AttachIfNotAttached(entity);
                 ChangeEntityState(entity, EntityState.Deleted);
                 Context.SaveChanges();
-                transaction.Complete();
             }
         }
 
         public virtual IEnumerable<ObjectValidationError> Validate(T entity)
         {
             var entityValidationResult = GetValidationErrors(entity);
-            return entityValidationResult.ValidationErrors.Select(validationError => new ObjectValidationError()
+            return entityValidationResult.ValidationErrors.Select(validationError => new ObjectValidationError
                                                                                          {
                                                                                              Message = validationError.ErrorMessage,
                                                                                              PropertyName = validationError.PropertyName
@@ -130,5 +165,6 @@ namespace RedRocket.Persistence.EF
                 return ((IObjectContextAdapter)Context).ObjectContext.CreateObjectSet<T>().EntitySet.Name;
             }
         }
+
     }
 }

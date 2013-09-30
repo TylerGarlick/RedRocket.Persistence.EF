@@ -38,19 +38,19 @@ namespace RedRocket.Persistence.EF
         /// </summary>
         /// <param name="entity">The entity to save</param>
         /// <returns>Saved Entity</returns>
-        T Add(T entity);
+        T Add(T entity, bool wrapInTransaction = true);
 
         /// <summary>
         /// Performs validation if enabled (ShouldValidate default = true).  Updates the entity, and saves the entity to the set.  The operation is wrapped in a transaction.
         /// </summary>
         /// <param name="entity">The entity to save</param>
         /// <returns>Saved Entity</returns>
-        T Update(T entity);
+        T Update(T entity, bool wrapInTransaction = true);
 
         /// <summary>
         /// Deletes an entiy from the set, and saves the deletion.  The operation is wrapped in a transaction.
         /// </summary>
-        void Delete(T entity);
+        void Delete(T entity, bool wrapInTransaction = true);
 
         /// <summary>
         /// Currnt Context

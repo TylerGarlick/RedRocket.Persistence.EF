@@ -38,7 +38,7 @@ namespace RedRocket.Persistence.EF.Testing
             return All().FirstOrDefault(predicate);
         }
 
-        public virtual T Add(T entity)
+        public virtual T Add(T entity, bool shouldWrapInTransaction = true)
         {
             if (entity.IsObjectValid())
             {
@@ -49,7 +49,7 @@ namespace RedRocket.Persistence.EF.Testing
             throw new ObjectValidationException(entity.GetValidationErrors());
         }
 
-        public virtual T Update(T entity)
+        public virtual T Update(T entity, bool shouldWrapInTransaction = true)
         {
             if (entity.IsObjectValid())
             {
@@ -57,8 +57,8 @@ namespace RedRocket.Persistence.EF.Testing
             }
             throw new ObjectValidationException(entity.GetValidationErrors());
         }
-       
-        public virtual void Delete(T entity)
+
+        public virtual void Delete(T entity, bool shouldWrapInTransaction = true)
         {
             Data.Remove(entity);
         }
