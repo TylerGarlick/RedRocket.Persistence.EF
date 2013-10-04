@@ -51,9 +51,9 @@ namespace RedRocket.Persistence.EF
             return All(includeDependentEntities, asNoTracking).SingleOrDefault(predicate);
         }
 
-        public virtual T Add(T entity, bool wrapInTransaction = true)
+        public virtual T Add(T entity, bool wrapInTransaction = true, bool shouldValidate = true)
         {
-            if (ShouldValidate)
+            if (ShouldValidate && shouldValidate)
             {
                 var errors = Validate(entity).ToList();
                 if (errors.Any())
@@ -78,9 +78,9 @@ namespace RedRocket.Persistence.EF
             return entity;
         }
 
-        public virtual T Update(T entity, bool wrapInTransaction = true)
+        public virtual T Update(T entity, bool wrapInTransaction = true, bool shouldValidate = true)
         {
-            if (ShouldValidate)
+            if (ShouldValidate && shouldValidate)
             {
                 var errors = Validate(entity).ToList();
                 if (errors.Any())

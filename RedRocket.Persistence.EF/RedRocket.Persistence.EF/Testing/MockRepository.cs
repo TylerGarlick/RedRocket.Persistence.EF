@@ -38,7 +38,7 @@ namespace RedRocket.Persistence.EF.Testing
             return All().FirstOrDefault(predicate);
         }
 
-        public virtual T Add(T entity, bool shouldWrapInTransaction = true)
+        public virtual T Add(T entity, bool shouldWrapInTransaction = true, bool shouldValidate = true)
         {
             if (entity.IsObjectValid())
             {
@@ -49,7 +49,7 @@ namespace RedRocket.Persistence.EF.Testing
             throw new ObjectValidationException(entity.GetValidationErrors());
         }
 
-        public virtual T Update(T entity, bool shouldWrapInTransaction = true)
+        public virtual T Update(T entity, bool shouldWrapInTransaction = true, bool shouldValidate = true)
         {
             if (entity.IsObjectValid())
             {
