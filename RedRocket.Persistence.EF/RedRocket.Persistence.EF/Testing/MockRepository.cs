@@ -23,17 +23,17 @@ namespace RedRocket.Persistence.EF.Testing
             Data.AddRange(initialData);
         }
 
-        public virtual IQueryable<T> All(bool includeDependentEntities = false)
+        public virtual IQueryable<T> All(bool includeDependentEntities = false, bool asNoTracking = false)
         {
             return Data.AsQueryable();
         }
 
-        public virtual IQueryable<T> Query(Func<T, bool> predicate, bool includeDependentEntities = false)
+        public virtual IQueryable<T> Query(Func<T, bool> predicate, bool includeDependentEntities = false, bool asNoTracking = false)
         {
             return All().Where(predicate).AsQueryable();
         }
 
-        public virtual T FindByKey(Expression<Func<T, bool>> predicate, bool includeDependentEntities = false)
+        public virtual T FindByKey(Expression<Func<T, bool>> predicate, bool includeDependentEntities = false, bool asNoTracking = false)
         {
             return All().FirstOrDefault(predicate);
         }

@@ -32,21 +32,23 @@ namespace RedRocket.Persistence.EF
             _includeMethod = d => GetPropsToLoad(typeof(T)).Aggregate(d, (current, prop) => current.Include(prop));
         }
 
-        public virtual IQueryable<T> All(bool includeDependentEntities = false)
+        public virtual IQueryable<T> All(bool includeDependentEntities = false, bool asNoTracking = false)
         {
-            return includeDependentEntities ?
+            var entities =  includeDependentEntities ?
                 IncludeDependenciesInQuery(Context.Set<T>()) :
                 Context.Set<T>();
+
+            return asNoTracking ? entities.AsNoTracking() : entities;
         }
 
-        public virtual IQueryable<T> Query(Func<T, bool> predicate, bool includeDependentEntities = false)
+        public virtual IQueryable<T> Query(Func<T, bool> predicate, bool includeDependentEntities = false, bool asNoTracking = false)
         {
-            return All(includeDependentEntities).Where(predicate).AsQueryable();
+            return All(includeDependentEntities, asNoTracking).Where(predicate).AsQueryable();
         }
 
-        public virtual T FindByKey(Expression<Func<T, bool>> predicate, bool includeDependentEntities = false)
+        public virtual T FindByKey(Expression<Func<T, bool>> predicate, bool includeDependentEntities = false, bool asNoTracking = false)
         {
-            return All(includeDependentEntities).SingleOrDefault(predicate);
+            return All(includeDependentEntities, asNoTracking).SingleOrDefault(predicate);
         }
 
         public virtual T Add(T entity, bool wrapInTransaction = true)
