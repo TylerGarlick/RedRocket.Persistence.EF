@@ -6,6 +6,7 @@ using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Transactions;
 using RedRocket.Persistence.EF.ContextFactories;
 using RedRocket.Utilities.Core.Validation;
@@ -14,6 +15,9 @@ namespace RedRocket.Persistence.EF
 {
     public class Repository<T> : IRepository<T> where T : class, new()
     {
+        readonly Func<DbQuery<T>, DbQuery<T>> _includeMethod;
+        readonly HashSet<Type> _visitedTypes;
+
         public DbContext Context { get; private set; }
         public bool ShouldValidate { get; set; }
         public bool ShouldWrapInTransaction { get; set; }
@@ -23,21 +27,26 @@ namespace RedRocket.Persistence.EF
             Context = dbContextFactory.GetDbContext(new T());
             ShouldValidate = shouldValidate;
             ShouldWrapInTransaction = shouldWrapInTransaction;
+
+            _visitedTypes = new HashSet<Type>();
+            _includeMethod = d => GetPropsToLoad(typeof(T)).Aggregate(d, (current, prop) => current.Include(prop));
         }
 
-        public virtual IQueryable<T> All()
+        public virtual IQueryable<T> All(bool includeDependentEntities = false)
         {
-            return Context.Set<T>();
+            return includeDependentEntities ?
+                IncludeDependenciesInQuery(Context.Set<T>()) :
+                Context.Set<T>();
         }
 
-        public virtual IQueryable<T> Query(Func<T, bool> predicate)
+        public virtual IQueryable<T> Query(Func<T, bool> predicate, bool includeDependentEntities = false)
         {
-            return All().Where(predicate).AsQueryable();
+            return All(includeDependentEntities).Where(predicate).AsQueryable();
         }
 
-        public virtual T FindByKey(Expression<Func<T, bool>> predicate)
+        public virtual T FindByKey(Expression<Func<T, bool>> predicate, bool includeDependentEntities = false)
         {
-            return All().SingleOrDefault(predicate);
+            return All(includeDependentEntities).SingleOrDefault(predicate);
         }
 
         public virtual T Add(T entity, bool wrapInTransaction = true)
@@ -166,5 +175,28 @@ namespace RedRocket.Persistence.EF
             }
         }
 
+
+        IEnumerable<string> GetPropsToLoad(Type type)
+        {
+            _visitedTypes.Add(type);
+
+            var propsToLoad = type.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(p => p.GetCustomAttributes(typeof(IncludeAttribute), true).Any());
+
+            foreach (var prop in propsToLoad)
+            {
+                yield return prop.Name;
+
+                if (_visitedTypes.Contains(prop.PropertyType))
+                    continue;
+
+                foreach (var subProp in GetPropsToLoad(prop.PropertyType))
+                    yield return prop.Name + "." + subProp;
+            }
+        }
+
+        DbQuery<T> IncludeDependenciesInQuery(DbSet<T> dbSet)
+        {
+            return _includeMethod(dbSet);
+        }
     }
 }

@@ -2,8 +2,11 @@
 using FlitBit.IoC;
 using FlitBit.Wireup;
 using FlitBit.Wireup.Meta;
+using RedRocket.Persistence.EF;
+using RedRocket.Persistence.EF.ContextFactories;
 using RedRocket.Repositories.EF.Tests;
 
+[assembly: WireupDependency(typeof(FlitBit.IoC.AssemblyWireup))]
 [assembly: WireupDependency(typeof(FlitBit.Dto.AssemblyWireup))]
 [assembly: Wireup(typeof(Wireup))]
 namespace RedRocket.Repositories.EF.Tests
@@ -21,6 +24,20 @@ namespace RedRocket.Repositories.EF.Tests
                      .Register<TestDbContext>()
                      .ResolveAnInstancePerScope()
                      .End();
+
+            Container.Root
+                    .ForType<IDbContextFactory>()
+                    .Register<DefaultDbContextFactory>()
+                    .ResolveAnInstancePerScope()
+                    .End();
+
+            Container.Root
+                .ForGenericType(typeof (IRepository<>))
+                .Register(typeof (Repository<>))
+                .ResolveAnInstancePerScope()
+                .End();
+
+
 
         }
     }

@@ -14,20 +14,20 @@ namespace RedRocket.Persistence.EF
         /// All entities in a given set of T
         /// </summary>
         /// <returns>Queryable Set of T</returns>
-        IQueryable<T> All();
+        IQueryable<T> All(bool includeDependentEntities = false);
 
         /// <summary>
         /// All entities in a given set of T matching predicate
         /// </summary>
         /// <returns>Queryable Set of T</returns>
-        IQueryable<T> Query(Func<T, bool> predicate);
+        IQueryable<T> Query(Func<T, bool> predicate, bool includeDependentEntities = false);
 
 
         /// <summary>
         /// Single or Default entity given a predicate
         /// </summary>
         /// <returns>Single or Default Entity of T</returns>
-        T FindByKey(Expression<Func<T, bool>> predicate);
+        T FindByKey(Expression<Func<T, bool>> predicate, bool includeDependentEntities = false);
     }
 
     public interface IRepository<T> : IReadOnlyRepository<T> where T : class
