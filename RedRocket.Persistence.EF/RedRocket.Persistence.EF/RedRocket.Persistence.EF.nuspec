@@ -24,7 +24,7 @@ using this tokenized nuspec file.
     <description>Entity Framework Implementation of the RedRocket Persistence Framework</description>
     <projectUrl>https://github.com/TylerGarlick/RedRocket.Persistence.EF</projectUrl>
     <dependencies>
-      <dependency id="EntityFramework" version="5.0.0"/>
+      <dependency id="EntityFramework" version="6.0.0"/>
       <dependency id="FlitBit.IoC" />
       <dependency id="RedRocket.Utilities.Core" />
       <dependency id="Newtonsoft.Json" />
