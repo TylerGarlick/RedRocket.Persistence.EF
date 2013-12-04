@@ -5,7 +5,7 @@ using RedRocket.Persistence.EF.ContextFactories;
 namespace RedRocket.Persistence.EF
 {
     [ContainerRegister(typeof(IDbContextFactory), RegistrationBehaviors.Default)]
-    public class DefaultDbContextFactory : AbstractInerfaceAwareDbContextFactory, IDbContextFactory
+    public class DefaultDbContextFactory : AbstractDbContextFactory, IDbContextFactory
     {
         readonly DbContext _context;
 

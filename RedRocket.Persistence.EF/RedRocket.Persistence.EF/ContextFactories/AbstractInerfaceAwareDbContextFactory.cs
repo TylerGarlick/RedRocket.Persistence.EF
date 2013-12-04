@@ -2,7 +2,7 @@ using System.Data.Entity;
 
 namespace RedRocket.Persistence.EF.ContextFactories
 {
-    public abstract class AbstractInerfaceAwareDbContextFactory : IDbContextFactory
+    public abstract class AbstractDbContextFactory : IDbContextFactory
     {
         /// <summary>
         /// Get the connection string based on any set of rules that you determine

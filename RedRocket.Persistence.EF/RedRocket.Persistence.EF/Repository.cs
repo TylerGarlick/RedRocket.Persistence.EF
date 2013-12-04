@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
@@ -19,48 +18,47 @@ namespace RedRocket.Persistence.EF
         readonly HashSet<Type> _visitedTypes;
 
         public DbContext Context { get; private set; }
-        public bool ShouldValidate { get; set; }
-        public bool ShouldWrapInTransaction { get; set; }
 
-        public Repository(IDbContextFactory dbContextFactory, bool shouldValidate = true, bool shouldWrapInTransaction = true)
+        public IRepositoryConfigurationSettings Configuration { get; set; }
+        public Repository(IRepositoryConfigurationSettings configuration)
         {
-            Context = dbContextFactory.GetDbContext(new T());
-            ShouldValidate = shouldValidate;
-            ShouldWrapInTransaction = shouldWrapInTransaction;
+            Configuration = configuration;
+            if (Configuration.DbContextFactory != null)
+                Context = Configuration.DbContextFactory.GetDbContext(new T());
 
             _visitedTypes = new HashSet<Type>();
             _includeMethod = d => GetPropsToLoad(typeof(T)).Aggregate(d, (current, prop) => current.Include(prop));
         }
 
-        public virtual IQueryable<T> All(bool includeDependentEntities = false, bool asNoTracking = false)
+        public virtual IQueryable<T> All()
         {
-            var entities =  includeDependentEntities ?
+            var entities = Configuration.ShouldIncludeDependencies ?
                 IncludeDependenciesInQuery(Context.Set<T>()) :
                 Context.Set<T>();
 
-            return asNoTracking ? entities.AsNoTracking() : entities;
+            return Configuration.ShouldTrackEntities ? entities.AsNoTracking() : entities;
         }
 
-        public virtual IQueryable<T> Query(Func<T, bool> predicate, bool includeDependentEntities = false, bool asNoTracking = false)
+        public virtual IQueryable<T> Query(Func<T, bool> predicate)
         {
-            return All(includeDependentEntities, asNoTracking).Where(predicate).AsQueryable();
+            return All().Where(predicate).AsQueryable();
         }
 
-        public virtual T FindByKey(Expression<Func<T, bool>> predicate, bool includeDependentEntities = false, bool asNoTracking = false)
+        public virtual T FindByKey(Expression<Func<T, bool>> predicate)
         {
-            return All(includeDependentEntities, asNoTracking).SingleOrDefault(predicate);
+            return All().SingleOrDefault(predicate);
         }
 
         public virtual T Add(T entity, bool wrapInTransaction = true, bool shouldValidate = true)
         {
-            if (ShouldValidate && shouldValidate)
+            if (Configuration.ShouldValidate && shouldValidate)
             {
                 var errors = Validate(entity).ToList();
                 if (errors.Any())
                     throw new ObjectValidationException(errors);
             }
 
-            if (ShouldWrapInTransaction && wrapInTransaction)
+            if (Configuration.ShouldWrapInTransaction && wrapInTransaction)
             {
                 using (var transaction = new TransactionScope())
                 {
@@ -80,7 +78,7 @@ namespace RedRocket.Persistence.EF
 
         public virtual T Update(T entity, bool wrapInTransaction = true, bool shouldValidate = true)
         {
-            if (ShouldValidate && shouldValidate)
+            if (Configuration.ShouldValidate && shouldValidate)
             {
                 var errors = Validate(entity).ToList();
                 if (errors.Any())
@@ -88,7 +86,7 @@ namespace RedRocket.Persistence.EF
             }
 
 
-            if (ShouldWrapInTransaction && wrapInTransaction)
+            if (Configuration.ShouldWrapInTransaction && wrapInTransaction)
             {
                 using (var transaction = new TransactionScope())
                 {
@@ -109,7 +107,7 @@ namespace RedRocket.Persistence.EF
 
         public virtual void Delete(T entity, bool wrapInTransaction = true)
         {
-            if (ShouldWrapInTransaction && wrapInTransaction)
+            if (Configuration.ShouldWrapInTransaction && wrapInTransaction)
             {
                 using (var transaction = new TransactionScope())
                 {

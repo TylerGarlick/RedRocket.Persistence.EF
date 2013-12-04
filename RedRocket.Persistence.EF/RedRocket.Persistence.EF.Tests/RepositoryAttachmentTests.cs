@@ -23,7 +23,7 @@ namespace RedRocket.Repositories.EF.Tests
             {
                 SeedWithData();
                 var humanRepository = Create.New<IRepository<Human>>();
-                var chuck = humanRepository.All(includeDependentEntities: true).FirstOrDefault(h => h.LastName.Equals("Norris"));
+                var chuck = humanRepository.All().FirstOrDefault(h => h.LastName.Equals("Norris"));
                 var chuckDto = Create.NewInit<IHumanDto>().Init(chuck);
                 Assert.AreEqual(chuck.FirstName, chuckDto.FirstName);
                 Assert.AreEqual(chuck.LastName, chuckDto.LastName);
